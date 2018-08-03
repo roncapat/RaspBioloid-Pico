@@ -6,6 +6,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   pico_msgs
 )
+catkin_python_setup()
 
 catkin_package(
   CATKIN_DEPENDS rospy pico_msgs message_runtime
