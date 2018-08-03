@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>pico</name>
+  <version>0.0.1</version>
+  <description>The UPS pico ROS node</description>
+
+  <maintainer email="roncapat@gmail.com">Patrick Roncagliolo</maintainer>
+  <maintainer email="alessio.deluca.iic96d@gmail.com">Alessio De Luca</maintainer>
+  <maintainer email="marco.lapolla5@gmail.com">Marco Lapolla</maintainer>
+
+  <license>GPLv3</license>
+
+  <author email="roncapat@gmail.com">Patrick Roncagliolo</author>
+  <author email="alessio.deluca.iic96d@gmail.com">Alessio De Luca</author>
+  <author email="marco.lapolla5@gmail.com">Marco Lapolla</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>rospy</build_depend>
+  <build_export_depend>rospy</build_export_depend>
+  <exec_depend>rospy</exec_depend>
+
+  <build_depend>pico_msgs</build_depend>
+  <build_export_depend>pico_msgs</build_export_depend>
+  <exec_depend>pico_msgs</exec_depend>
+
+  <exec_depend>message_runtime</exec_depend>
+
+  <export/>
+</package>
