@@ -1,30 +1,31 @@
 #!/usr/bin/env python
 
-import pico, rospy
+import rospy
+import pico
 from pico_msgs.srv import *
 from pico_msgs.msg import *
 from std_msgs.msg import Float32
 
 def info_callback(req):
-	ret = PicoInfoResponse()
-	
-	ret.status = get_working_status()
-  ret.temperature = get_temperature()
-  ret.power_source = get_power_source()
-  ret.charge_status = get_charger_status()
-  ret.ext_voltage = get_ext_voltage()
-  ret.batt_voltage = get_bat_voltage()
-  ret.rpi_voltage = get_rpi_voltage()
+  ret = PicoInfoResponse()
 
-	return ret
+  ret.status = pico.get_working_status()
+  ret.temperature = pico.get_temperature()
+  ret.power_source = pico.get_power_source()
+  ret.charge_status = pico.get_charger_status()
+  ret.ext_voltage = pico.get_ext_voltage()
+  ret.batt_voltage = pico.get_bat_voltage()
+  ret.rpi_voltage = pico.get_rpi_voltage()
+
+  return ret
 
 
 def start_server():
-	rospy.init_node("pico_info_server")
-	s = rospy.Service("pico_info", PicoInfo, info_callback)
-	print("Avvio il servizio...")
-	rospy.spin()
+  rospy.init_node("pico_info_server")
+  s = rospy.Service("pico_info", PicoInfo, info_callback)
+  print("Avvio il servizio...")
+  rospy.spin()
 
 
 if __name__ == "__main__":
-	start_server()
+  start_server()
