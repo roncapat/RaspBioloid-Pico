@@ -20,9 +20,9 @@
   <build_export_depend>rospy</build_export_depend>
   <exec_depend>rospy</exec_depend>
 
-  <build_depend>pico_msgs</build_depend>
-  <build_export_depend>pico_msgs</build_export_depend>
-  <exec_depend>pico_msgs</exec_depend>
+  <build_depend>pico_srvs</build_depend>
+  <build_export_depend>pico_srvs</build_export_depend>
+  <exec_depend>pico_srvs</exec_depend>
 
   <exec_depend>message_runtime</exec_depend>
 

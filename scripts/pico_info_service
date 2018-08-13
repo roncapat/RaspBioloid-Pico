@@ -2,9 +2,7 @@
 
 import rospy
 import pico
-from pico_msgs.srv import *
-from pico_msgs.msg import *
-from std_msgs.msg import Float32
+from pico_srvs.srv import *
 
 def info_callback(req):
   ret = PicoInfoResponse()

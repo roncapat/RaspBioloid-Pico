@@ -63,11 +63,12 @@ def get_power_source():
 
 def get_charger_status():
   res = pico.read_byte_data(0x69, 0x20)
-  return ("charging" if res == 0x01 else "discharging")
+  return res == 0x01
+  #return ("charging" if res == 0x01 else "discharging")
 
 def get_working_status():
   _a = pico.read_byte_data(0x69, 0x22)
-  sleep(0.002)
+  sleep(0.01)
   _b = pico.read_byte_data(0x69, 0x22)
   return ("working" if (_b > _a) else "crashed")
 
@@ -97,7 +98,7 @@ if __name__ == "__main__":
   print "Status: %s" % get_working_status()
   print "Temperature: %s" % get_temperature()
   print "Source: %s" % get_power_source()
-  print "Charging: %s" % get_charger_status()
+  print "Charging: %s" % ("charging" if get_charger_status() else "discharging")
   print "External voltage: %.02f" % get_ext_voltage()
   print "Battery voltage: %.02f" % get_bat_voltage()
   print "Raspberry voltage: %.02f" % get_rpi_voltage()
