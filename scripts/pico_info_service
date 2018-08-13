@@ -2,7 +2,22 @@
 
 import rospy
 import pico
+import threading
+import dbus
 from pico_srvs.srv import *
+from std_srvs.srv import SetBool
+
+bus = dbus.SystemBus()
+shut = bus.get_object('org.freedesktop.login1', '/org/freedesktop/login1')
+shutr = dbus.Interface(shut, 'org.freedesktop.login1.Manager')
+min_ext_voltage = None
+fssd_enabled = False
+
+def fssd_timer():
+  if (pico.get_ext_voltage() < min_ext_voltage):
+    shutr.PowerOff(True)
+  elif fssd_enabled:
+    threading.Timer(5.0, fssd_timer).start()
 
 def info_callback(req):
   ret = PicoInfoResponse()
@@ -16,12 +31,26 @@ def info_callback(req):
   ret.rpi_voltage = pico.get_rpi_voltage()
 
   return ret
+  
+def set_low_level_callback(req):
+  global min_ext_voltage
+  min_ext_voltage = req.low_level
 
+def enable_fssd_callback(req):
+  if req.data and not fssd_enabled:
+    threading.Timer(5.0, fssd_timer).start()
+  fssd_enabled = req.data
+  res = SetBoolResponse()
+  res.success = True
+  return res
 
 def start_server():
+  global timer
   rospy.init_node("pico_info_server")
-  s = rospy.Service("pico_info", PicoInfo, info_callback)
-  print("Avvio il servizio...")
+  rospy.Service("pico_info", PicoInfo, info_callback)
+  rospy.Service("pico_set_low_level", PicoLowLevel, set_low_level_callback)
+  rospy.Service("pico_enable_fssd", SetBool, enable_fssd_callback)
+  timer = threading.Timer(5.0, fssd_timer)
   rospy.spin()
 
 
