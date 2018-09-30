@@ -13,47 +13,52 @@ shutr = dbus.Interface(shut, 'org.freedesktop.login1.Manager')
 min_ext_voltage = None
 fssd_enabled = False
 
+
 def fssd_timer():
-  global fssd_enabled, min_ext_voltage
-  if (pico.get_ext_voltage() < min_ext_voltage):
-    shutr.PowerOff(True)
-  elif fssd_enabled:
-    threading.Timer(5.0, fssd_timer).start()
+    global fssd_enabled, min_ext_voltage
+    if pico.get_ext_voltage() < min_ext_voltage:
+        shutr.PowerOff(True)
+    elif fssd_enabled:
+        threading.Timer(5.0, fssd_timer).start()
+
 
 def info_callback(req):
-  ret = PicoInfoResponse()
+    ret = PicoInfoResponse()
 
-  ret.status = pico.get_working_status()
-  ret.temperature = pico.get_temperature()
-  ret.power_source = pico.get_power_source()
-  ret.charge_status = pico.get_charger_status()
-  ret.ext_voltage = pico.get_ext_voltage()
-  ret.batt_voltage = pico.get_bat_voltage()
-  ret.rpi_voltage = pico.get_rpi_voltage()
+    ret.status = pico.get_working_status()
+    ret.temperature = pico.get_temperature()
+    ret.power_source = pico.get_power_source()
+    ret.charge_status = pico.get_charger_status()
+    ret.ext_voltage = pico.get_ext_voltage()
+    ret.batt_voltage = pico.get_bat_voltage()
+    ret.rpi_voltage = pico.get_rpi_voltage()
 
-  return ret
-  
+    return ret
+
+
 def set_low_level_callback(req):
-  global min_ext_voltage
-  min_ext_voltage = req.low_level
-  return PicoLowLevelResponse()
+    global min_ext_voltage
+    min_ext_voltage = req.low_level
+    return PicoLowLevelResponse()
+
 
 def enable_fssd_callback(req):
-  global fssd_enabled
-  if req.data and not fssd_enabled:
-    threading.Timer(5.0, fssd_timer).start()
-  fssd_enabled = req.data
-  res = SetBoolResponse()
-  res.success = True
-  return res
+    global fssd_enabled
+    if req.data and not fssd_enabled:
+        threading.Timer(5.0, fssd_timer).start()
+    fssd_enabled = req.data
+    res = SetBoolResponse()
+    res.success = True
+    return res
+
 
 def start_server():
-  rospy.init_node("pico_info_server")
-  rospy.Service("pico_info", PicoInfo, info_callback)
-  rospy.Service("pico_set_low_level", PicoLowLevel, set_low_level_callback)
-  rospy.Service("pico_enable_fssd", SetBool, enable_fssd_callback)
-  rospy.spin()
+    rospy.init_node("pico_info_server")
+    rospy.Service("pico_info", PicoInfo, info_callback)
+    rospy.Service("pico_set_low_level", PicoLowLevel, set_low_level_callback)
+    rospy.Service("pico_enable_fssd", SetBool, enable_fssd_callback)
+    rospy.spin()
 
 
 if __name__ == "__main__":
-  start_server()
+    start_server()
